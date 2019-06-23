@@ -49,7 +49,7 @@ def calculate_edge_weigth(node1, node2, time_mages):
             edge_weight = Infinity
         elif nb_common == nb_node2 - 2:
             # two mages not present in node2 => two mages pass
-            idx_mage_that_go_back = node1[node1 not in node2][0][0]
+            idx_mage_that_go_back = [idx for idx in node1 if idx not in node2][0]
             idxs_mages_that_come = mages_difference
             # we have assert(len(idxs_mages_that_come) == 2) is True
             edge_weight = np.max([time_mages[idxs_mages_that_come[0]], time_mages[idxs_mages_that_come[1]]]) + time_mages[idx_mage_that_go_back]
@@ -105,9 +105,9 @@ def construct_graph(n, time_mages, enable_inf=False, disp_info=False):
                 if k < n-2:
                     for j in combinations(all_mages_idxs, k+1):
                         j = np.array(j)
-                        logging.info("Edge : " +str(i)+ " -> " + str(j))
                         edge_weight = calculate_edge_weigth(i, j, time_mages)
                         if edge_weight != Infinity or enable_inf:
+                            logging.info("Edge : " +str(i)+ " -> " + str(j))
                             # do not add the edge in case of infinity useless
                             graph[get_id_node(i)].append((get_id_node(j),edge_weight))
                 else:
@@ -132,5 +132,6 @@ if __name__ == "__main__":
 
     # calculate the shortest path in graph from node 0 to the the node -1
     shortest_path = dijkstra(nodoI=0, grafo=mages_graph)[-1]
-    # displqy the shortest path
+
+    # display the shortest path
     print(shortest_path)
